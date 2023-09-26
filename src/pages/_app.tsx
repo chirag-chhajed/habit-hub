@@ -6,7 +6,9 @@ import Head from "next/head";
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
-      <Head>{/* <link rel="manifest" href="/manifest.json" /> */}</Head>
+      <Head>
+        <title>Habit Hub</title>
+      </Head>
       <AuthComponent>
         <Component {...pageProps} />
       </AuthComponent>
