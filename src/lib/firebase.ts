@@ -2,6 +2,7 @@ import { type FirebaseApp, initializeApp } from "firebase/app";
 import { type Auth, getAuth } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
 import * as firebase from "firebase/app";
+import { getFirestore } from "firebase/firestore";
 
 // console.log(process.env.NEXT_PUBLIC_MEASUREMENT_ID);
 
@@ -38,5 +39,7 @@ export const analytics = () => {
     return null;
   }
 };
+
+export const db = getFirestore(app);
 
 export default app;

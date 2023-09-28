@@ -1,32 +1,53 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
 import { useRouter } from "next/router";
+import { collection, addDoc, where, query, getDocs } from "firebase/firestore";
+import { useUserStore } from "@/store/useUserStore";
+
+const dbInstance = collection(db, "user");
 
 const LandingPage = () => {
   const router = useRouter();
+  const { user, setUser } = useUserStore();
+  useEffect(() => {
+    console.log(user, "store");
+  }, [user]);
   const googleLogin = async () => {
     const provider = new GoogleAuthProvider();
     try {
       const res = await signInWithPopup(auth, provider);
-      console.log(res.user.displayName);
+
+      // console.log(res.user);
+      const q = query(dbInstance, where("user_id", "==", res.user.uid));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        await addDoc(dbInstance, {
+          displayName: res.user.displayName!,
+          email: res.user.email!,
+          photoURL: res.user.photoURL!,
+          user_id: res.user.uid!,
+        })
+          .then((res) => console.log(res, "User added to document"))
+          .catch((err) => console.log(err));
+      } else {
+        console.log("User already exists");
+      }
+      setUser({
+        displayName: res.user.displayName!,
+        email: res.user.email!,
+        photoURL: res.user.photoURL!,
+        user_id: res.user.uid!,
+      });
+      console.log(user);
       router.push("/dashboard");
     } catch (error) {
       console.error(error);
     }
   };
 
-  // const gitHubLogin = async () => {
-  //   const provider = new GithubAuthProvider();
-  //   try {
-  //     const res = await signInWithPopup(auth, provider);
-  //     console.log(res.user.displayName);
-  //     void router.push("/protected/hello");
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
   return (
     <div className="flex h-screen flex-col place-content-center items-center justify-center gap-4 bg-slate-400">
       <h1 className="text-4xl font-bold text-slate-800">
@@ -46,10 +67,6 @@ const LandingPage = () => {
         </svg>
         Log in with Google
       </Button>
-      {/* <Button onClick={() => void gitHubLogin()}>
-        <GithubIcon className="mr-2" />
-        Log in with Github
-      </Button> */}
     </div>
   );
 };
