@@ -22,6 +22,7 @@ import {
 import { db } from "@/lib/firebase";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { useUserStore } from "@/store/useUserStore";
+import { useToast } from "./ui/use-toast";
 
 const formSchema = z.object({
   habitName: z.string().min(2, {
@@ -32,6 +33,7 @@ const formSchema = z.object({
 
 export default function ProfileForm() {
   const { user } = useUserStore();
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -50,7 +52,12 @@ export default function ProfileForm() {
       user_id: user.user_id,
       created_at: Timestamp.now(),
     })
-      .then((res) => console.log(res, "Habit added to document"))
+      .then((res) => {
+        form.reset();
+        toast({
+          description: "Habit created successfully!",
+        });
+      })
       .catch((err) => console.log(err));
     console.log(values);
   }
