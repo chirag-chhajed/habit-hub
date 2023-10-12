@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth, db } from "@/lib/firebase";
@@ -11,9 +10,7 @@ const dbInstance = collection(db, "user");
 const LandingPage = () => {
   const router = useRouter();
   const { user, setUser } = useUserStore();
-  useEffect(() => {
-    console.log(user, "store");
-  }, [user]);
+
   const googleLogin = async () => {
     const provider = new GoogleAuthProvider();
     try {
@@ -35,12 +32,6 @@ const LandingPage = () => {
       } else {
         console.log("User already exists");
       }
-      setUser({
-        displayName: res.user.displayName!,
-        email: res.user.email!,
-        photoURL: res.user.photoURL!,
-        user_id: res.user.uid!,
-      });
       console.log(user);
       router.push("/dashboard");
     } catch (error) {
@@ -53,10 +44,7 @@ const LandingPage = () => {
       <h1 className="text-4xl font-bold text-slate-800">
         Hello this is the landing page
       </h1>
-      <Button
-        onClick={() => void googleLogin()}
-        // className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-      >
+      <Button onClick={() => void googleLogin()}>
         <svg
           className="mr-2 h-6 w-6"
           xmlns="http://www.w3.org/2000/svg"

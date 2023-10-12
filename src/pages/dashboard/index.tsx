@@ -14,6 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import ProfileForm from "@/components/HabitForm";
+import DummyTable from "@/components/DummyTable";
 
 const DashBoard = () => {
   const router = useRouter();
@@ -34,7 +35,7 @@ const DashBoard = () => {
         </Button>
       </header>
       <main className="h-screen">
-        <div className="grid place-content-center bg-secondary text-secondary-foreground h-full">
+        <div className="grid place-content-center bg-secondary text-secondary-foreground p-4">
           <Dialog>
             <DialogTrigger asChild>
               <Button>Add Habit</Button>
@@ -48,6 +49,7 @@ const DashBoard = () => {
             </DialogContent>
           </Dialog>
         </div>
+        <DummyTable />
       </main>
     </>
   );
